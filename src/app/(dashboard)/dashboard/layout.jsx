@@ -10,6 +10,7 @@ import { AuthContext } from "@/context/AuthContext"
 const NAV_LINKS = [
   { href: "/dashboard", label: "Inicio" },
   { href: "/dashboard/skills", label: "Skills" },
+  { href: "/dashboard/users", label: "Usuarios" },
 ]
 
 export default function DashboardLayout({ children }) {

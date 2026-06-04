@@ -11,15 +11,7 @@ import { ErrorMessage } from "@/components/ui/ErrorMessage"
 import { useResource } from "@/hooks/useResource"
 import { skillsService } from "@/services/skills.service"
 import { SKILL_LEVELS, categoryLabel } from "@/features/skills/skills-constants"
-
-const formatDate = (value) =>
-  value
-    ? new Date(value).toLocaleDateString("es-ES", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
-    : "—"
+import { formatDate } from "@/lib/utils"
 
 export default function SkillDetailPage() {
   const { id } = useParams()
@@ -74,8 +66,8 @@ export default function SkillDetailPage() {
                 <Meta label="ID" value={`#${skill.id}`} />
                 <Meta label="Categoría" value={categoryLabel(skill.category)} />
                 <Meta label="Nivel" value={level?.label ?? skill.level} />
-                <Meta label="Creada" value={formatDate(skill.created_at)} />
-                <Meta label="Actualizada" value={formatDate(skill.updated_at)} />
+                <Meta label="Creada" value={formatDate(skill.created_at, { long: true })} />
+                <Meta label="Actualizada" value={formatDate(skill.updated_at, { long: true })} />
               </dl>
             </CardContent>
           </Card>
