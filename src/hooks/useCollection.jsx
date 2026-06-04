@@ -52,6 +52,10 @@ function useCollection({
     const setPage = (page) =>
         setParams((prev) => ({ ...prev, page }))
 
+    // Reemplaza un item en la lista local tras una mutación, sin recargar
+    const updateItem = (updated) =>
+        setData((prev) => prev.map((item) => (item.id === updated.id ? updated : item)))
+
     return {
         data,
         count,
@@ -61,6 +65,7 @@ function useCollection({
         error,
         setQuery,
         setPage,
+        updateItem,
         reload: load,
     }
 }
