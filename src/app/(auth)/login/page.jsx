@@ -1,34 +1,27 @@
 "use client"
 
-import { useState } from "react"
+import { useContext, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { FormField, FormLabel, FormMessage } from "@/components/ui/form"
-import api from "@/lib/api"
+import { AuthContext } from "@/context/AuthContext"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [serverError, setServerError] = useState("")
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm()
 
-  const onSubmit = async ({ email, password }) => {
-    setServerError("")
-    try {
-      const { data } = await api.post("/token/", { email, password })
-      localStorage.setItem("access_token", data.access)
-      localStorage.setItem("refresh_token", data.refresh)
-      router.push("/dashboard")
-    } catch (err) {
-      const detail = err.response?.data?.detail
-      setServerError(detail || "Credenciales incorrectas. Inténtalo de nuevo.")
-    }
-  }
+  const { user, errorLogin, login } = useContext(AuthContext)
+
+  // Si el login fue exitoso (ya hay usuario), entramos al dashboard
+  useEffect(() => {
+    if (user) router.replace("/dashboard")
+  }, [user])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -40,7 +33,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(login)} className="space-y-4">
           <FormField>
             <FormLabel htmlFor="email">Email</FormLabel>
             <Input
@@ -73,8 +66,8 @@ export default function LoginPage() {
             <FormMessage>{errors.password?.message}</FormMessage>
           </FormField>
 
-          {serverError && (
-            <p className="text-sm font-medium text-destructive">{serverError}</p>
+          {errorLogin && (
+            <p className="text-sm font-medium text-destructive">{errorLogin}</p>
           )}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>

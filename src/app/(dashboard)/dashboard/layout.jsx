@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { AuthContext } from "@/context/AuthContext"
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Inicio" },
@@ -15,17 +16,29 @@ export default function DashboardLayout({ children }) {
   const router = useRouter()
   const pathname = usePathname()
 
+  const { user, loading, me, logout } = useContext(AuthContext)
+
+  // Cargamos el usuario
   useEffect(() => {
-    const token = localStorage.getItem("access_token")
-    if (!token) {
-      router.replace("/login")
-    }
-  }, [router])
+    me()
+  }, [])
+
+  //Sin usuario devolvemos al login
+  useEffect(() => {
+    if (!loading && !user) router.replace("/login")
+  }, [user, loading])
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token")
-    localStorage.removeItem("refresh_token")
+    logout()
     router.replace("/login")
+  }
+
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-sm text-muted-foreground">Cargando...</p>
+      </div>
+    )
   }
 
   return (

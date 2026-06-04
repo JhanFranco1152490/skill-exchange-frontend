@@ -1,33 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import api from "@/lib/api"
+import { useContext } from "react"
+import { AuthContext } from "@/context/AuthContext"
 
 export default function DashboardPage() {
-  const router = useRouter()
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    api
-      .get("/users/me/")
-      .then(({ data }) => setUser(data))
-      .catch(() => {
-        localStorage.removeItem("access_token")
-        localStorage.removeItem("refresh_token")
-        router.replace("/login")
-      })
-      .finally(() => setLoading(false))
-  }, [router])
-
-  if (loading) {
-    return (
-      <main className="flex-1 p-6">
-        <p className="text-sm text-muted-foreground">Cargando...</p>
-      </main>
-    )
-  }
+  // El usuario ya viene cargado por el layout del dashboard
+  const { user } = useContext(AuthContext)
 
   return (
     <main className="flex-1 p-6 space-y-4">
