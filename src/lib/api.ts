@@ -1,4 +1,10 @@
-import axios from "axios"
+import axios, { isAxiosError } from "axios"
+
+declare module "axios" {
+  interface InternalAxiosRequestConfig {
+    _retry?: boolean
+  }
+}
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -7,10 +13,10 @@ const api = axios.create({
 const ACCESS_KEY = "access_token"
 const REFRESH_KEY = "refresh_token"
 
-const getToken = (key) =>
+const getToken = (key: string): string | null =>
   typeof window !== "undefined" ? localStorage.getItem(key) : null
 
-const clearTokens = () => {
+const clearTokens = (): void => {
   if (typeof window === "undefined") return
   localStorage.removeItem(ACCESS_KEY)
   localStorage.removeItem(REFRESH_KEY)
@@ -29,11 +35,15 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
 
-  async (error) => {
+  async (error: unknown) => {
+    if (!isAxiosError(error)) return Promise.reject(error)
+
     const originalRequest = error.config
 
+    if (!originalRequest) return Promise.reject(error)
+
     // No intentamos refrescar en los propios endpoints de token
-    const isAuthRoute = originalRequest.url?.includes("/token/")
+    const isAuthRoute = originalRequest.url?.includes("/token/") ?? false
 
     if (error.response?.status !== 401 || originalRequest._retry || isAuthRoute) {
       return Promise.reject(error)
@@ -48,7 +58,7 @@ api.interceptors.response.use(
     originalRequest._retry = true
 
     try {
-      const { data } = await api.post("/token/refresh/", { refresh })
+      const { data } = await api.post<{ access: string }>("/token/refresh/", { refresh })
       localStorage.setItem(ACCESS_KEY, data.access)
       return api(originalRequest)
     } catch (refreshError) {
