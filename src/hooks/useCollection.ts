@@ -2,9 +2,11 @@ import type { Paginated, QueryParams } from "@/types/api"
 import { isAxiosError } from "axios"
 import { useEffect, useState } from "react"
 
-type CollectionProps<T> = {
-    fetcher: (params: QueryParams) => Promise<Paginated<T>>
-    initialParams?: QueryParams
+// P = forma de los query params de esta colección. Por defecto la base común
+// (page/search/ordering); cada entidad puede pasar la suya (ej. SkillParams).
+type CollectionProps<T, P extends QueryParams> = {
+    fetcher: (params: P) => Promise<Paginated<T>>
+    initialParams?: P
     loadError?: (err: unknown) => string
 }
 
@@ -13,24 +15,24 @@ type CollectionProps<T> = {
 // la respuesta paginada ({ count, next, previous, results }) y los estados
 // de carga/error. Todo el filtrado/orden/búsqueda/paginación es server-side:
 // cada cambio de params dispara una nueva llamada al API.
-function useCollection<T extends { id: number }>({
+function useCollection<T extends { id: number }, P extends QueryParams = QueryParams>({
     fetcher,
-    initialParams = {},
+    initialParams,
     loadError = () => "Error al cargar los datos. Verifica tu conexión.",
-}: CollectionProps<T>) {
+}: CollectionProps<T, P>) {
 
     const [data, setData] = useState<T[]>([])
     const [count, setCount] = useState(0)
     const [pageSize, setPageSize] = useState(0)
-    const [params, setParams] = useState<QueryParams>({ page: 1, ...initialParams })
+    const [params, setParams] = useState<P>({ page: 1, ...initialParams } as P)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState("")
 
     // Quita params vacíos para no enviar ?category= o ?search= en blanco
-    const cleanParams = (raw: QueryParams): QueryParams =>
+    const cleanParams = (raw: P): P =>
         Object.fromEntries(
             Object.entries(raw).filter(([, value]) => value !== "" && value != null)
-        )
+        ) as P
 
     const load = async (): Promise<void> => {
         try {
@@ -42,8 +44,8 @@ function useCollection<T extends { id: number }>({
             // Una página con "next" está llena: su tamaño es el pageSize real
             if (res.next || params.page === 1) setPageSize(res.results.length)
         } catch (err) {
-            const detail = isAxiosError(err) ? err.response?.data?.detail : null    
-            setError(detail ?? loadError(err)) 
+            const detail = isAxiosError(err) ? err.response?.data?.detail : null
+            setError(detail ?? loadError(err))
         } finally {
             setIsLoading(false)
         }
@@ -55,10 +57,10 @@ function useCollection<T extends { id: number }>({
     }, [params])
 
     // Cambiar un filtro/orden/búsqueda vuelve a la página 1
-    const setQuery = (patch: QueryParams) =>
+    const setQuery = (patch: Partial<P>) =>
         setParams((prev) => ({ ...prev, ...patch, page: 1 }))
 
-    const setPage = (page:number) =>
+    const setPage = (page: number) =>
         setParams((prev) => ({ ...prev, page }))
 
     // Reemplaza un item en la lista local tras una mutación, sin recargar

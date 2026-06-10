@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/ui/button"
 import { SKILL_CATEGORIES } from "@/features/skills/skills-constants"
+import type { Category } from "@/types/skill"
 
 type Props = {
-    value: string
-    onChange: (value: string) => void
+    value: Category | undefined
+    onChange: (value: Category | undefined) => void
 }
 
-// Botones de categoría. Click en la categoría activa la limpia (toggle).
+// Botones de categoría. Click en la categoría activa la limpia (undefined = sin filtro).
 function CategoryFilter({ value, onChange }: Props) {
     return (
         <div className="flex flex-wrap gap-2">
@@ -20,7 +21,7 @@ function CategoryFilter({ value, onChange }: Props) {
                         key={cat.value}
                         variant={active ? "default" : "outline"}
                         size="sm"
-                        onClick={() => onChange(active ? "" : cat.value)}
+                        onClick={() => onChange(active ? undefined : cat.value)}
                     >
                         <Icon />
                         {cat.label}

@@ -51,7 +51,7 @@ export default function UsersPage() {
           </div>
           <Pagination
             count={count}
-            page={typeof params.page === "number" ? params.page : 1}
+            page={params.page ?? 1}
             pageSize={pageSize}
             onPageChange={setPage}
           />

@@ -5,4 +5,10 @@ export type Paginated<T> = {
     results: T[]
 }
 
-export type QueryParams = Record<string, unknown>
+// Params comunes a cualquier colección paginada. Cada entidad los extiende
+// con sus propios filtros (ej. SkillParams añade category/level).
+export type QueryParams = {
+    page?: number
+    search?: string
+    ordering?: string
+}

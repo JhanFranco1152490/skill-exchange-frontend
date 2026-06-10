@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react"
+import type { QueryParams } from "./api"
 
 export type Category = "technical" | "creative" | "communication" | "leadership" | "business" | "personal_development" | "other"
 export type Level = "beginner" | "intermediate" | "advanced" | "expert"
@@ -34,4 +35,10 @@ export type LevelStyle = Record<Level, { label: string, className: string }>
 export type OrderOption = {
     value: Order
     label: string
+}
+
+// Query params de skills: la base común + los filtros propios
+export type SkillParams = QueryParams & {
+    category?: Category
+    level?: Level
 }
