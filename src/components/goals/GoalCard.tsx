@@ -5,17 +5,24 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { formatDate } from "@/lib/utils"
+import { Goal } from "@/types/goal"
+
+type Props = {
+    goal: Goal
+    onAchieve: (id: Goal["id"]) => void
+    achieving: boolean
+}
 
 // Porcentaje de progreso a partir de los valores decimales (string) del API
-const progressPercent = (current, target) => {
-    const c = parseFloat(current ?? 0)
-    const t = parseFloat(target ?? 0)
+const progressPercent = (current?: string, target?: string) => {
+    const c: number = parseFloat(current ?? "0")
+    const t: number = parseFloat(target ?? "0")
     if (!t || t <= 0) return 0
     return Math.min(100, Math.round((c / t) * 100))
 }
 
 // Tarjeta de meta: progreso porcentual + botón "Alcanzar".
-function GoalCard({ goal, onAchieve, achieving }) {
+function GoalCard({ goal, onAchieve, achieving }: Props) {
     const achieved = goal.status === "achieved"
     const percent = progressPercent(goal.current_value, goal.target_value)
 
