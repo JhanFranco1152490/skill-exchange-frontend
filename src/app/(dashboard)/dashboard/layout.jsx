@@ -3,7 +3,8 @@
 import { useContext, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { AuthContext } from "@/context/AuthContext"
-import { Navbar } from "@/components/Navbar"
+import { Navbar } from "../../../components/layout/Navbar"
+import { NAV_LINKS } from "../../../features/links/nav-links"
 
 export default function DashboardLayout({ children }) {
   const router = useRouter()
@@ -30,7 +31,7 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Navbar />
+      <Navbar links={NAV_LINKS}/>
       {children}
     </div>
   )

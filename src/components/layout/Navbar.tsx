@@ -1,25 +1,18 @@
 "use client"
 
-import { useContext } from "react"
+import { HamburgerMenu } from "@/components/layout/HamburgerMenu"
+import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/AuthContext"
+import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { AuthContext } from "@/context/AuthContext"
-import { HamburgerMenu } from "@/components/HamburgerMenu"
-
-const NAV_LINKS = [
-    { href: "/dashboard", label: "Inicio" },
-    { href: "/dashboard/skills", label: "Skills" },
-    { href: "/dashboard/users", label: "Usuarios" },
-    { href: "/dashboard/goals", label: "Metas" },
-]
+import { NavLink } from "@/types/link"
 
 // Barra de navegación principal
-function Navbar() {
+function Navbar({ links }: { links: NavLink[] }) {
     const router = useRouter()
     const pathname = usePathname()
-    const { logout } = useContext(AuthContext)
+    const { logout } = useAuthContext()
 
     const handleLogout = () => {
         logout()
@@ -31,7 +24,7 @@ function Navbar() {
             <div className="flex items-center gap-6">
                 <span className="text-base font-semibold">Skill Exchange</span>
                 <nav className="hidden items-center gap-1 md:flex">
-                    {NAV_LINKS.map((link) => (
+                    {links.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
@@ -57,7 +50,7 @@ function Navbar() {
                 Cerrar sesión
             </Button>
 
-            <HamburgerMenu links={NAV_LINKS} onLogout={handleLogout} />
+            <HamburgerMenu links={links} onLogout={handleLogout} />
         </header>
     )
 }

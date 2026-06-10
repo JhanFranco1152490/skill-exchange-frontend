@@ -6,9 +6,15 @@ import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { NavLink } from "@/types/link"
+
+type Props = {
+    links: NavLink[]
+    onLogout: () => void
+}
 
 // Menú colapsable para pantallas pequeñas (mobile-first).
-function HamburgerMenu({ links, onLogout }) {
+function HamburgerMenu({ links, onLogout }: Props) {
     const [open, setOpen] = useState(false)
     const pathname = usePathname()
     const close = () => setOpen(false)
