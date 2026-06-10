@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 type Props = {
     message?: string
-    onRetry: () => Promise<void>
+    onRetry?: () => void
 }
 
 // Mensaje de error cuando una petición al API falla. Si recibe `onRetry`,

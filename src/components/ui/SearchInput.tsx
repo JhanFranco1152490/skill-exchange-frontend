@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input"
 
 type Props = { 
     onSearch: (value:string) => void
-    placeholder: string
-    delay: number
+    placeholder?: string
+    delay?: number
 }
 
 // Input de búsqueda con debounce: avisa onSearch tras `delay` ms sin teclear.
