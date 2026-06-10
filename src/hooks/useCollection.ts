@@ -1,30 +1,38 @@
+import type { Paginated, QueryParams } from "@/types/api"
+import { isAxiosError } from "axios"
 import { useEffect, useState } from "react"
+
+type CollectionProps<T> = {
+    fetcher: (params: QueryParams) => Promise<Paginated<T>>
+    initialParams?: QueryParams
+    loadError?: (err: unknown) => string
+}
 
 // Hook genérico para listas paginadas del API.
 // Recibe un `fetcher` (la función del service) y maneja los query params,
 // la respuesta paginada ({ count, next, previous, results }) y los estados
 // de carga/error. Todo el filtrado/orden/búsqueda/paginación es server-side:
 // cada cambio de params dispara una nueva llamada al API.
-function useCollection({
+function useCollection<T extends { id: number }>({
     fetcher,
     initialParams = {},
     loadError = () => "Error al cargar los datos. Verifica tu conexión.",
-}) {
+}: CollectionProps<T>) {
 
-    const [data, setData] = useState([])
+    const [data, setData] = useState<T[]>([])
     const [count, setCount] = useState(0)
     const [pageSize, setPageSize] = useState(0)
-    const [params, setParams] = useState({ page: 1, ...initialParams })
+    const [params, setParams] = useState<QueryParams>({ page: 1, ...initialParams })
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState("")
 
     // Quita params vacíos para no enviar ?category= o ?search= en blanco
-    const cleanParams = (raw) =>
+    const cleanParams = (raw: QueryParams): QueryParams =>
         Object.fromEntries(
             Object.entries(raw).filter(([, value]) => value !== "" && value != null)
         )
 
-    const load = async () => {
+    const load = async (): Promise<void> => {
         try {
             setIsLoading(true)
             setError("")
@@ -34,7 +42,8 @@ function useCollection({
             // Una página con "next" está llena: su tamaño es el pageSize real
             if (res.next || params.page === 1) setPageSize(res.results.length)
         } catch (err) {
-            setError(err.response?.data?.detail || loadError(err))
+            const detail = isAxiosError(err) ? err.response?.data?.detail : null    
+            setError(detail ?? loadError(err)) 
         } finally {
             setIsLoading(false)
         }
@@ -46,14 +55,14 @@ function useCollection({
     }, [params])
 
     // Cambiar un filtro/orden/búsqueda vuelve a la página 1
-    const setQuery = (patch) =>
+    const setQuery = (patch: QueryParams) =>
         setParams((prev) => ({ ...prev, ...patch, page: 1 }))
 
-    const setPage = (page) =>
+    const setPage = (page:number) =>
         setParams((prev) => ({ ...prev, page }))
 
     // Reemplaza un item en la lista local tras una mutación, sin recargar
-    const updateItem = (updated) =>
+    const updateItem = (updated: T) =>
         setData((prev) => prev.map((item) => (item.id === updated.id ? updated : item)))
 
     return {

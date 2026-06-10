@@ -1,3 +1,4 @@
+import { TOKEN_KEYS } from "@/types/tokens"
 import axios, { isAxiosError } from "axios"
 
 declare module "axios" {
@@ -10,20 +11,17 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 })
 
-const ACCESS_KEY = "access_token"
-const REFRESH_KEY = "refresh_token"
-
 const getToken = (key: string): string | null =>
   typeof window !== "undefined" ? localStorage.getItem(key) : null
 
 const clearTokens = (): void => {
   if (typeof window === "undefined") return
-  localStorage.removeItem(ACCESS_KEY)
-  localStorage.removeItem(REFRESH_KEY)
+  localStorage.removeItem(TOKEN_KEYS.access)
+  localStorage.removeItem(TOKEN_KEYS.refresh)
 }
 
 api.interceptors.request.use((config) => {
-  const token = getToken(ACCESS_KEY)
+  const token = getToken(TOKEN_KEYS.access)
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -49,7 +47,7 @@ api.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    const refresh = getToken(REFRESH_KEY)
+    const refresh = getToken(TOKEN_KEYS.refresh)
     if (!refresh) {
       clearTokens()
       return Promise.reject(error)
@@ -59,7 +57,7 @@ api.interceptors.response.use(
 
     try {
       const { data } = await api.post<{ access: string }>("/token/refresh/", { refresh })
-      localStorage.setItem(ACCESS_KEY, data.access)
+      localStorage.setItem(TOKEN_KEYS.access, data.access)
       return api(originalRequest)
     } catch (refreshError) {
       clearTokens()

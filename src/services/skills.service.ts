@@ -1,11 +1,11 @@
 import { api } from "@/lib/api"
-import type { Paginated } from "@/types/api"
+import type { Paginated, QueryParams } from "@/types/api"
 import type { SkillDetail, SkillList } from "@/types/skill"
 
 export const skillsService = {
     // Lista paginada. `params` son los query params (category, level,
     // ordering, search, page). Devuelve { count, next, previous, results }.
-    getSkills: async (params: Record<string, unknown>) => {
+    getSkills: async (params: QueryParams) => {
         const response = await api.get<Paginated<SkillList>>("/skills/", { params })
         return response.data
     },

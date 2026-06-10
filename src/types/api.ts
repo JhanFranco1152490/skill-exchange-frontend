@@ -5,6 +5,8 @@ export type Paginated<T> = {
     results: T[]
 }
 
+export type QueryParams = Record<string, unknown>
+
 export type Category = "technical" | "creative" | "communication" | "leadership" | "business" | "personal_development" | "other"
 export type Level = "beginner" | "intermediate" | "advanced" | "expert"
 export type GoalStatus = "active" | "paused" | "achieved" | "archived"
