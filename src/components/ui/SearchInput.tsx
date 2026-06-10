@@ -4,9 +4,15 @@ import { useEffect, useRef, useState } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 
+type Props = { 
+    onSearch: (value:string) => void
+    placeholder: string
+    delay: number
+}
+
 // Input de búsqueda con debounce: avisa onSearch tras `delay` ms sin teclear.
 // Omite el primer render para no disparar una búsqueda vacía al montar.
-function SearchInput({ onSearch, placeholder = "Buscar...", delay = 400 }) {
+function SearchInput({ onSearch, placeholder = "Buscar...", delay = 400 }: Props) {
     const [value, setValue] = useState("")
     const firstRender = useRef(true)
 

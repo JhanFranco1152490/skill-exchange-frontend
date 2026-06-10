@@ -3,9 +3,16 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
+type Props = {
+    count: number
+    page: number
+    pageSize: number
+    onPageChange: (target: number) => void
+}
+
 // Paginación reutilizable. Calcula el total de páginas a partir de `count` y
 // `pageSize`, y avisa el cambio con `onPageChange`.
-function Pagination({ count, page, pageSize, onPageChange }) {
+function Pagination({ count, page, pageSize, onPageChange }: Props) {
     const totalPages = pageSize > 0 ? Math.ceil(count / pageSize) : 0
 
     if (totalPages <= 1) return null
@@ -13,7 +20,7 @@ function Pagination({ count, page, pageSize, onPageChange }) {
     const from = (page - 1) * pageSize + 1
     const to = Math.min(page * pageSize, count)
 
-    const goTo = (target) => {
+    const goTo = (target: number) => {
         if (target >= 1 && target <= totalPages && target !== page) {
             onPageChange(target)
         }
@@ -65,12 +72,12 @@ function Pagination({ count, page, pageSize, onPageChange }) {
 }
 
 // Números de página a mostrar; intercala "…" cuando hay demasiadas
-function getPageNumbers(page, totalPages) {
+function getPageNumbers(page: number, totalPages: number) {
     if (totalPages <= 7) {
         return Array.from({ length: totalPages }, (_, i) => i + 1)
     }
 
-    const pages = [1]
+    const pages: (number | "…")[] = [1]
     const start = Math.max(2, page - 1)
     const end = Math.min(totalPages - 1, page + 1)
 
