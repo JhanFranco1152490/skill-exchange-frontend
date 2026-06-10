@@ -1,6 +1,9 @@
-import type { GoalStatus, GoalType } from "./api"
 import type { SkillSummary } from "./skill"
 import type { UserSummary } from "./user"
+
+export type GoalStatus = "active" | "paused" | "achieved" | "archived"
+export type GoalType = "skill" | "community" | "project" | "mentoring" | "certification" | "contribution"
+
 
 export interface Goal {
   readonly id: number

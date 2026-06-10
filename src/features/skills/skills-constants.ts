@@ -1,3 +1,4 @@
+import { CategoryOption, LevelStyle, OrderOption } from "@/types/skill"
 import {
     Briefcase,
     Code,
@@ -9,7 +10,7 @@ import {
 } from "lucide-react"
 
 // Categorías del API (value) con su etiqueta e icono para el filtro
-const SKILL_CATEGORIES = [
+const SKILL_CATEGORIES: CategoryOption[] = [
     { value: "technical", label: "Technical", icon: Code },
     { value: "creative", label: "Creative", icon: Palette },
     { value: "communication", label: "Communication", icon: MessageSquare },
@@ -20,7 +21,7 @@ const SKILL_CATEGORIES = [
 ]
 
 // Niveles con la clase de color del badge (verde→rojo según dificultad)
-const SKILL_LEVELS = {
+const SKILL_LEVELS: LevelStyle = {
     beginner: { label: "Beginner", className: "border-green-200 bg-green-50 text-green-700" },
     intermediate: { label: "Intermediate", className: "border-blue-200 bg-blue-50 text-blue-700" },
     advanced: { label: "Advanced", className: "border-orange-200 bg-orange-50 text-orange-700" },
@@ -28,7 +29,7 @@ const SKILL_LEVELS = {
 }
 
 // Opciones del selector de orden (mapea al param `ordering` del API)
-const SKILL_ORDERING = [
+const SKILL_ORDERING: OrderOption[] = [
     { value: "name", label: "Nombre A–Z" },
     { value: "-name", label: "Nombre Z–A" },
     { value: "-created_at", label: "Más recientes" },
@@ -36,7 +37,7 @@ const SKILL_ORDERING = [
 ]
 
 // Etiqueta legible de una categoría a partir de su value ("technical" → "Technical")
-const categoryLabel = (value) =>
+const categoryLabel = (value: string) =>
     SKILL_CATEGORIES.find((c) => c.value === value)?.label ?? value
 
 export { SKILL_CATEGORIES, SKILL_LEVELS, SKILL_ORDERING, categoryLabel }

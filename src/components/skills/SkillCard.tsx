@@ -3,9 +3,14 @@ import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { SKILL_LEVELS, categoryLabel } from "@/features/skills/skills-constants"
+import { SkillList } from "@/types/skill"
+
+type Props = {
+    skill: SkillList
+}
 
 // Tarjeta con nombre, categoría y nivel de una skill. Lleva al detalle.
-function SkillCard({ skill }) {
+function SkillCard({ skill }: Props) {
     const level = SKILL_LEVELS[skill.level]
 
     return (

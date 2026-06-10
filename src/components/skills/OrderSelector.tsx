@@ -2,8 +2,13 @@
 
 import { SKILL_ORDERING } from "@/features/skills/skills-constants"
 
+type Props = {
+    value: string
+    onChange: (value: string) => void
+}
+
 // Dropdown para elegir el orden de los resultados (param `ordering`)
-function OrderSelector({ value, onChange }) {
+function OrderSelector({ value, onChange }: Props) {
     return (
         <select
             value={value}
