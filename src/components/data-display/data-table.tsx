@@ -6,10 +6,20 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { TableColumn } from "@/types/table"
+
+type Props<T> = {
+    columns: TableColumn<T>[]
+    data: T[]
+}
 
 // Tabla genérica manejada por un array de columnas:
 // { key, header, className?, render?(value, row), hidden? }
-function DataTable({ columns, data, ...props }) {
+function DataTable<T extends { id: number | string }>({
+    columns,
+    data,
+    ...props
+}: Props<T>) {
     columns = columns.filter((column) => !column.hidden)
 
     return (
@@ -17,7 +27,7 @@ function DataTable({ columns, data, ...props }) {
             <TableHeader>
                 <TableRow>
                     {columns.map((column) => (
-                        <TableHead key={column.key} className={column.className}>
+                        <TableHead key={String(column.key)} className={column.className}>
                             {column.header}
                         </TableHead>
                     ))}
@@ -27,10 +37,10 @@ function DataTable({ columns, data, ...props }) {
                 {data.map((row, index) => (
                     <TableRow key={row.id ?? index}>
                         {columns.map((column) => (
-                            <TableCell key={column.key}>
+                            <TableCell key={String(column.key)}>
                                 {column.render
                                     ? column.render(row[column.key], row)
-                                    : row[column.key]}
+                                    : String(row[column.key])}
                             </TableCell>
                         ))}
                     </TableRow>

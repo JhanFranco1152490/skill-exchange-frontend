@@ -1,13 +1,15 @@
 import { formatDate } from "@/lib/utils"
+import { TableColumn } from "@/types/table"
+import { UserList } from "@/types/user"
 
 // Iniciales para el avatar ("Jhan Franco" → "JF")
-const initials = (user) =>
+const initials = (user: UserList) =>
     `${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`.toUpperCase()
 
 // Columnas de la tabla de usuarios (formato que consume DataTable)
-const userColumns = [
+const userColumns: TableColumn<UserList>[] = [
     {
-        key: "name",
+        key: "first_name",
         header: "Usuario",
         render: (value, row) => (
             <div className="flex items-center gap-3">
@@ -27,7 +29,10 @@ const userColumns = [
     {
         key: "date_joined",
         header: "Fecha de ingreso",
-        render: (value) => formatDate(value),
+        render: (value) => {
+            if (typeof value !== "string") return null
+            return formatDate(value)
+        }
     },
 ]
 
