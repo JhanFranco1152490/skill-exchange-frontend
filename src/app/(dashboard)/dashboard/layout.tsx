@@ -1,15 +1,15 @@
 "use client"
 
-import { useContext, useEffect } from "react"
+import { useAuthContext } from "@/context/AuthContext"
 import { useRouter } from "next/navigation"
-import { AuthContext } from "@/context/AuthContext"
+import { ReactNode, useEffect } from "react"
 import { Navbar } from "../../../components/layout/Navbar"
 import { NAV_LINKS } from "../../../features/links/nav-links"
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children }: {children: ReactNode}) {
   const router = useRouter()
 
-  const { user, loading, me } = useContext(AuthContext)
+  const { user, loading, me } = useAuthContext()
 
   // Cargamos el usuario
   useEffect(() => {

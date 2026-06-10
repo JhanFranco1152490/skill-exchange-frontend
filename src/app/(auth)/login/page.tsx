@@ -1,14 +1,15 @@
 "use client"
 
-import { useContext, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { FormField, FormLabel, FormMessage } from "@/components/ui/form"
-import { AuthContext } from "@/context/AuthContext"
+import { Input } from "@/components/ui/input"
+import { useAuthContext } from "@/context/AuthContext"
+import { Login } from "@/types/auth"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -16,9 +17,9 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm()
+  } = useForm<Login>()
 
-  const { user, errorLogin, login } = useContext(AuthContext)
+  const { user, errorLogin, login } = useAuthContext()
 
   // Si el login fue exitoso (ya hay usuario), entramos al dashboard
   useEffect(() => {

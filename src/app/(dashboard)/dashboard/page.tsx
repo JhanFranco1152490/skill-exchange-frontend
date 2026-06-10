@@ -1,11 +1,10 @@
 "use client"
 
-import { useContext } from "react"
-import { AuthContext } from "@/context/AuthContext"
+import { useAuthContext } from "@/context/AuthContext"
 
 export default function DashboardPage() {
   // El usuario ya viene cargado por el layout del dashboard
-  const { user } = useContext(AuthContext)
+  const { user } = useAuthContext()
 
   return (
     <main className="flex-1 p-6 space-y-4">

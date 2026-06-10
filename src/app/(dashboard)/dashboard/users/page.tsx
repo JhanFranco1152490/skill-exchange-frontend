@@ -9,6 +9,7 @@ import { Pagination } from "@/components/ui/Pagination"
 import { LoadingState } from "@/components/ui/LoadingState"
 import { ErrorMessage } from "@/components/ui/ErrorMessage"
 import { EmptyState } from "@/components/ui/EmptyState"
+import { UserList } from "@/types/user"
 
 export default function UsersPage() {
   const {
@@ -21,7 +22,7 @@ export default function UsersPage() {
     setQuery,
     setPage,
     reload,
-  } = useCollection({
+  } = useCollection<UserList>({
     fetcher: usersService.getUsers,
     loadError: () => "No se pudieron cargar los usuarios.",
   })
@@ -46,11 +47,11 @@ export default function UsersPage() {
       ) : (
         <>
           <div className="rounded-md border">
-            <DataTable columns={userColumns} data={users} />
+            <DataTable<UserList> columns={userColumns} data={users} />
           </div>
           <Pagination
             count={count}
-            page={params.page}
+            page={typeof params.page === "number" ? params.page : 1}
             pageSize={pageSize}
             onPageChange={setPage}
           />

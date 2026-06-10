@@ -12,15 +12,16 @@ import { useResource } from "@/hooks/useResource"
 import { skillsService } from "@/services/skills.service"
 import { SKILL_LEVELS, categoryLabel } from "@/features/skills/skills-constants"
 import { formatDate } from "@/lib/utils"
+import { SkillDetail } from "@/types/skill"
 
 export default function SkillDetailPage() {
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>()
   const {
     data: skill,
     isLoading,
     error,
     reload,
-  } = useResource({
+  } = useResource<SkillDetail>({
     fetcher: skillsService.getSkill,
     id,
     loadError: () => "No se pudo cargar la skill.",
@@ -77,7 +78,7 @@ export default function SkillDetailPage() {
   )
 }
 
-function Meta({ label, value }) {
+function Meta({ label, value }: { label: string, value: string }) {
   return (
     <div>
       <dt className="text-muted-foreground">{label}</dt>

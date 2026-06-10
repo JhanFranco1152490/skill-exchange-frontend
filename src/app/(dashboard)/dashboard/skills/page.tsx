@@ -10,6 +10,7 @@ import { Pagination } from "@/components/ui/Pagination"
 import { LoadingState } from "@/components/ui/LoadingState"
 import { ErrorMessage } from "@/components/ui/ErrorMessage"
 import { EmptyState } from "@/components/ui/EmptyState"
+import { SkillList } from "@/types/skill"
 
 export default function SkillsPage() {
   const {
@@ -22,7 +23,7 @@ export default function SkillsPage() {
     setQuery,
     setPage,
     reload,
-  } = useCollection({
+  } = useCollection<SkillList>({
     fetcher: skillsService.getSkills,
     initialParams: { ordering: "name" },
     loadError: () => "No se pudieron cargar las skills.",
@@ -33,7 +34,7 @@ export default function SkillsPage() {
       <h2 className="text-xl font-semibold">Skills</h2>
 
       <CategoryFilter
-        value={params.category ?? ""}
+        value={typeof params.category === "string" ? params.category : ""}
         onChange={(category) => setQuery({ category })}
       />
 
@@ -42,7 +43,7 @@ export default function SkillsPage() {
           <SearchInput placeholder="Buscar skills..." onSearch={(search) => setQuery({ search })} />
         </div>
         <OrderSelector
-          value={params.ordering ?? ""}
+          value={typeof params.ordering === "string" ? params.ordering : ""}
           onChange={(ordering) => setQuery({ ordering })}
         />
       </div>
@@ -62,7 +63,7 @@ export default function SkillsPage() {
           </div>
           <Pagination
             count={count}
-            page={params.page}
+            page={typeof params.page === "number" ? params.page : 1}
             pageSize={pageSize}
             onPageChange={setPage}
           />

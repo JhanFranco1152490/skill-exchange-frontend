@@ -50,7 +50,7 @@ export default function GoalsPage() {
           </div>
           <Pagination
             count={count}
-            page={params.page}
+            page={typeof params.page === "number" ? params.page : 1}
             pageSize={pageSize}
             onPageChange={setPage}
           />
